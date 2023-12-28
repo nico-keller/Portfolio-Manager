@@ -1,0 +1,17 @@
+{
+  "frontendFolder": "/Users/nicolaskeller/Portfolio_Manager_Project/./frontend",
+  "themeFolder": "themes",
+  "themeResourceFolder": "/Users/nicolaskeller/Portfolio_Manager_Project/./frontend/generated/jar-resources",
+  "staticOutput": "/Users/nicolaskeller/Portfolio_Manager_Project/target/classes/META-INF/VAADIN/webapp/VAADIN/static",
+  "generatedFolder": "generated",
+  "statsOutput": "/Users/nicolaskeller/Portfolio_Manager_Project/target/classes/META-INF/VAADIN/config",
+  "frontendBundleOutput": "/Users/nicolaskeller/Portfolio_Manager_Project/target/classes/META-INF/VAADIN/webapp",
+  "devBundleOutput": "/Users/nicolaskeller/Portfolio_Manager_Project/src/main/dev-bundle/webapp",
+  "devBundleStatsOutput": "/Users/nicolaskeller/Portfolio_Manager_Project/src/main/dev-bundle/config",
+  "jarResourcesFolder": "/Users/nicolaskeller/Portfolio_Manager_Project/./frontend/generated/jar-resources",
+  "themeName": "",
+  "clientServiceWorkerSource": "/Users/nicolaskeller/Portfolio_Manager_Project/target/sw.ts",
+  "pwaEnabled": false,
+  "offlineEnabled": false,
+  "offlinePath": "'offline.html'"
+}
