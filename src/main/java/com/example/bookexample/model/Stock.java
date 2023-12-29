@@ -4,13 +4,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 
 @Entity
 public class Stock {
@@ -27,7 +27,18 @@ public class Stock {
     @Column
     private String sector;
 
-    @ManyToMany(mappedBy = "stocks", fetch = FetchType.EAGER)
-    private List<Portfolio> portfolios;
+//    @ManyToMany(mappedBy = "stocks", fetch = FetchType.EAGER)
+//    private List<Portfolio> portfolios;
+
+    @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL)
+    private Set<StockTrade> stockTransactions;
+
+    public Stock(String tickerSymbol, String companyName, double currentPrice, String sector) {
+        this.tickerSymbol = tickerSymbol.toUpperCase();
+        this.companyName = companyName;
+        this.currentPrice = currentPrice;
+        this.sector = sector;
+        this.stockTransactions = new HashSet<>();
+    }
 
 }

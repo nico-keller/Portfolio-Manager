@@ -4,89 +4,102 @@ import com.example.bookexample.model.Investor;
 import com.example.bookexample.model.Portfolio;
 import com.example.bookexample.service.InvestorService;
 import com.example.bookexample.service.PortfolioService;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.formlayout.FormLayout;
+import com.example.bookexample.viewmodel.PortfolioViewModel;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.vaadin.crudui.crud.CrudListener;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @SpringComponent
-public class PortfolioCrudListener implements CrudListener<Portfolio> {
+public class PortfolioCrudListener implements CrudListener<PortfolioViewModel> {
 
     private final PortfolioService portfolioService;
-    private final ComboBox<Investor> investorComboBox;
-    private Binder<Portfolio> binder;
+
+    private final InvestorService investorService;
 
     public PortfolioCrudListener(PortfolioService portfolioService, InvestorService investorService) {
         this.portfolioService = portfolioService;
-        this.investorComboBox = new ComboBox<>("Select Investor", investorService.findAllInvestors());
-        investorComboBox.setItemLabelGenerator(investor -> String.valueOf(investor.getInvestorId())); // Identifier
-        binder = new Binder<>(Portfolio.class);
-    }
-
-    public FormLayout createPortfolioForm() {
-        FormLayout formLayout = new FormLayout();
-
-        TextField portfolioNameField = new TextField("Portfolio Name");
-        binder.forField(portfolioNameField)
-                .bind(Portfolio::getPortfolioName, Portfolio::setPortfolioName);
-
-        formLayout.add(portfolioNameField, investorComboBox);
-        return formLayout;
+        this.investorService = investorService;
     }
 
     @Override
-    public Collection<Portfolio> findAll() {
-        return portfolioService.findAllPortfolios();
+    public Collection<PortfolioViewModel> findAll() {
+        List<Portfolio> portfolioList = portfolioService.findAllPortfolios();
+        List<PortfolioViewModel> portfolioViewModelList = new ArrayList<>();
+        for (Portfolio portfolio : portfolioList) {
+            portfolioViewModelList.add(new PortfolioViewModel(portfolio.getPortfolioId(), portfolio.getOpeningDate(), portfolio.getPortfolioName(), portfolio.getInvestor().getInvestorId()));
+        }
+        return portfolioViewModelList;
     }
 
     @Override
-    public Portfolio add(Portfolio portfolio) {
-        FormLayout formLayout = createPortfolioForm();
-        Button saveButton = new Button("Save", event -> savePortfolio(portfolio));
-        formLayout.add(saveButton);
-
-        // Display the form to the user
-        // ...
-
-        return portfolio;
-    }
-
-    private void savePortfolio(Portfolio portfolio) {
-        Investor selectedInvestor = investorComboBox.getValue();
-        if (selectedInvestor == null) {
-            Notification.show("Please select an investor", 3000, Notification.Position.MIDDLE);
-            return;
+    public PortfolioViewModel add(PortfolioViewModel portfolio) {
+        List<Portfolio> portfolioList = portfolioService.findAllPortfolios();
+        boolean exists = false;
+        for (Portfolio p : portfolioList) {
+            if (p.getPortfolioId() == portfolio.getPortfolioId()) {
+                Notification.show("Portfolio with this ID already exists!", 3000, Notification.Position.MIDDLE);
+                exists = true;
+            }
+        }
+        if (!exists) {
+            List<Investor> investorList = investorService.findAllInvestors();
+            Investor investor = null;
+            for (Investor i : investorList) {
+                if (i.getInvestorId() == portfolio.getInvestorId()) {
+                    investor = i;
+                }
+            }
+            if (investor == null) {
+                Notification.show("Investor with this ID does not exist!", 3000, Notification.Position.MIDDLE);
+            } else {
+                Portfolio p = new Portfolio(portfolio.getPortfolioId(), portfolio.getOpeningDate(), portfolio.getPortfolioName(), investor);
+                portfolioService.addPortfolio(p);
+                investor.getPortfolios().add(p);
+            }
         }
 
-        binder.writeBeanIfValid(portfolio);
-        portfolio.setInvestor(selectedInvestor);
-        portfolioService.addPortfolio(portfolio);
-        Notification.show("Portfolio added", 3000, Notification.Position.MIDDLE);
+        return portfolio;
     }
 
     @Override
-    public Portfolio update(Portfolio portfolio) {
-        FormLayout formLayout = createPortfolioForm();
-        Button saveButton = new Button("Save", event -> savePortfolio(portfolio));
-        formLayout.add(saveButton);
-
-        binder.readBean(portfolio);
-        investorComboBox.setValue(portfolio.getInvestor());
-
-        // Display the form to the user for editing
-        // ...
+    public PortfolioViewModel update(PortfolioViewModel portfolio) {
+        List<Portfolio> portfolioList = portfolioService.findAllPortfolios();
+        for (Portfolio p : portfolioList) {
+            if (p.getPortfolioId() == portfolio.getPortfolioId()) {
+                p.setOpeningDate(portfolio.getOpeningDate());
+                p.setPortfolioName(portfolio.getPortfolioName());
+                List<Investor> investorList = investorService.findAllInvestors();
+                Investor investor = null;
+                for (Investor i : investorList) {
+                    if (i.getInvestorId() == portfolio.getInvestorId()) {
+                        investor = i;
+                    }
+                }
+                if (investor == null) {
+                    Notification.show("Investor with this ID does not exist!", 3000, Notification.Position.MIDDLE);
+                } else {
+                    p.getInvestor().getPortfolios().remove(p);
+                    p.setInvestor(investor);
+                    investor.getPortfolios().add(p);
+                }
+            }
+        }
 
         return portfolio;
     }
 
     @Override
-    public void delete(Portfolio portfolio) {
-        portfolioService.deletePortfolioById(portfolio.getPortfolioId());
+    public void delete(PortfolioViewModel portfolio) {
+        List<Portfolio> portfolioList = portfolioService.findAllPortfolios();
+        for (Portfolio p : portfolioList) {
+            if (p.getPortfolioId() == portfolio.getPortfolioId()) {
+                p.getInvestor().getPortfolios().remove(p);
+                portfolioService.deletePortfolioById(p.getPortfolioId());
+            }
+        }
     }
 }

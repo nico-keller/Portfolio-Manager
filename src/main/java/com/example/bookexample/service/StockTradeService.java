@@ -5,9 +5,9 @@ import com.example.bookexample.model.StockTrade;
 import java.util.List;
 
 public interface StockTradeService {
-    StockTrade findStockTraderById(long traderId);
-    List<StockTrade> findAllStockTraders();
-    void addStockTrader(StockTrade stockTrader);
-    void updateStockTrader(StockTrade stockTrader);
-    void deleteStockTraderById(long traderId);
+    StockTrade findStockTradeById(long traderId);
+    List<StockTrade> findAllStockTrades();
+    void addStockTrade(StockTrade stockTrader);
+    void updateStockTrade(StockTrade stockTrader);
+    void deleteStockTradeById(long traderId);
 }

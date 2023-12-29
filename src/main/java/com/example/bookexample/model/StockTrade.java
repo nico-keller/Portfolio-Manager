@@ -15,7 +15,6 @@ import java.util.Date;
 public class StockTrade {
 
     @Id
-    @GeneratedValue
     private long transactionId;
 
     @Column
@@ -35,5 +34,4 @@ public class StockTrade {
     @ManyToOne
     @JoinColumn(name = "tickerSymbol", nullable = false)
     private Stock stock;
-
 }

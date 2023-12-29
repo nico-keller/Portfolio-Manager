@@ -3,6 +3,7 @@ package com.example.bookexample.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -15,7 +16,6 @@ import java.util.Set;
 public class Investor {
 
         @Id
-        @GeneratedValue
         private long investorId;
 
         @Column
@@ -29,4 +29,12 @@ public class Investor {
 
         @OneToMany(mappedBy = "investor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
         private Set<Portfolio> portfolios;
+
+        public Investor(long investorId, String firstName, String lastName, String email) {
+            this.investorId = investorId;
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.email = email;
+            this.portfolios = new HashSet<>();
+        }
 }

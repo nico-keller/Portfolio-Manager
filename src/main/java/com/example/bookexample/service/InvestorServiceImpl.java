@@ -25,8 +25,7 @@ public class InvestorServiceImpl implements InvestorService {
 
     @Override
     public Investor findInvestorById(long id) {
-        return investorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Investor not found"));
+        return investorRepository.findByInvestorId(id);
     }
 
     @Override

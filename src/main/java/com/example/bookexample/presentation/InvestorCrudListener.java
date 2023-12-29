@@ -4,51 +4,73 @@ import com.example.bookexample.model.Investor;
 import com.example.bookexample.model.Portfolio;
 import com.example.bookexample.service.InvestorService;
 import com.example.bookexample.service.PortfolioService;
+import com.example.bookexample.viewmodel.InvestorViewModel;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.notification.Notification;
 import org.vaadin.crudui.crud.CrudListener;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 
 @SpringComponent
-public class InvestorCrudListener implements CrudListener<Investor> {
+public class InvestorCrudListener implements CrudListener<InvestorViewModel> {
 
     private final InvestorService investorService;
-    private ComboBox<Investor> investorComboBox;
-    private ComboBox<Portfolio> portfolioComboBox;
 
-    public InvestorCrudListener(InvestorService investorService, PortfolioService portfolioService) {
+    public InvestorCrudListener(InvestorService investorService) {
         this.investorService = investorService;
-        investorComboBox = new ComboBox<>("Select Investor", investorService.findAllInvestors());
-        investorComboBox.setItemLabelGenerator(Investor::getEmail); // Or another identifier
-        portfolioComboBox = new ComboBox<>("Select Portfolio", portfolioService.findAllPortfolios());
-        portfolioComboBox.setItemLabelGenerator(Portfolio::getPortfolioName); // Or another identifier
-    }
-    public void associatePortfolioWithInvestor() {
-        Long investorId = investorComboBox.getValue().getInvestorId();
-        Long portfolioId = portfolioComboBox.getValue().getPortfolioId();
-        investorService.associatePortfolioWithInvestor(investorId, portfolioId);
     }
 
     @Override
-    public Collection<Investor> findAll() {
-        return investorService.findAllInvestors();
+    public Collection<InvestorViewModel> findAll() {
+        List<Investor> investorList = investorService.findAllInvestors();
+        List <InvestorViewModel> investorViewModelList = new ArrayList<>();
+        for (Investor investor : investorList) {
+            investorViewModelList.add(new InvestorViewModel(investor.getInvestorId(), investor.getFirstName(), investor.getLastName(), investor.getEmail()));
+        }
+        return investorViewModelList;
     }
 
     @Override
-    public Investor add(Investor investor) {
-        investorService.addInvestor(investor);
+    public InvestorViewModel add(InvestorViewModel investor) {
+        List<Investor> investorList = investorService.findAllInvestors();
+        boolean exists = false;
+        for (Investor i : investorList) {
+            if (i.getInvestorId() == investor.getInvestorId()) {
+                Notification.show("Investor with this ID already exists!", 3000, Notification.Position.MIDDLE);
+                exists = true;
+            }
+        }
+        if (!exists) {
+            investorService.addInvestor(new Investor(investor.getInvestorId(), investor.getFirstName(), investor.getLastName(), investor.getEmail()));
+        }
+
         return investor;
     }
 
     @Override
-    public Investor update(Investor investor) {
-        investorService.updateInvestor(investor);
+    public InvestorViewModel update(InvestorViewModel investor) {
+        List<Investor> investorList = investorService.findAllInvestors();
+        for (Investor i : investorList) {
+            if (i.getInvestorId() == investor.getInvestorId()) {
+                i.setFirstName(investor.getFirstName());
+                i.setLastName(investor.getLastName());
+                i.setEmail(investor.getEmail());
+            }
+        }
+
         return investor;
     }
 
     @Override
-    public void delete(Investor investor) {
-        investorService.deleteInvestorById(investor.getInvestorId());
+    public void delete(InvestorViewModel investor) {
+        List<Investor> investorList = investorService.findAllInvestors();
+        for (Investor i : investorList) {
+            if (i.getInvestorId() == investor.getInvestorId()) {
+                investorService.deleteInvestor(i);
+            }
+        }
     }
 }

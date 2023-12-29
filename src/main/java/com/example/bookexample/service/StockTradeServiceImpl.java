@@ -17,23 +17,23 @@ public class StockTradeServiceImpl implements StockTradeService {
     }
 
     @Override
-    public StockTrade findStockTraderById(long traderId) {
+    public StockTrade findStockTradeById(long traderId) {
         return stockTradeRepository.findById(traderId)
                 .orElseThrow(() -> new RuntimeException("StockTrade not found"));
     }
 
     @Override
-    public List<StockTrade> findAllStockTraders() {
+    public List<StockTrade> findAllStockTrades() {
         return (List<StockTrade>) stockTradeRepository.findAll();
     }
 
     @Override
-    public void addStockTrader(StockTrade stockTrade) {
+    public void addStockTrade(StockTrade stockTrade) {
         stockTradeRepository.save(stockTrade);
     }
 
     @Override
-    public void updateStockTrader(StockTrade stockTrade) {
+    public void updateStockTrade(StockTrade stockTrade) {
         if (!stockTradeRepository.existsById(stockTrade.getTransactionId())) {
             throw new RuntimeException("StockTrade not found");
         }
@@ -41,7 +41,7 @@ public class StockTradeServiceImpl implements StockTradeService {
     }
 
     @Override
-    public void deleteStockTraderById(long traderId) {
+    public void deleteStockTradeById(long traderId) {
         stockTradeRepository.deleteById(traderId);
     }
 }

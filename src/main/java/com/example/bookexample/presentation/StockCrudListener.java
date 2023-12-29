@@ -1,46 +1,90 @@
 package com.example.bookexample.presentation;
 
-import com.example.bookexample.model.Investor;
 import com.example.bookexample.model.Stock;
-import com.example.bookexample.service.InvestorService;
+import com.example.bookexample.model.StockTrade;
 import com.example.bookexample.service.StockService;
+import com.example.bookexample.service.StockTradeService;
+import com.example.bookexample.viewmodel.StockViewModel;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import org.springframework.stereotype.Component;
 import org.vaadin.crudui.crud.CrudListener;
 
+import java.util.ArrayList;
 import java.util.Collection;
-
+import java.util.List;
 
 
 @SpringComponent
-public class StockCrudListener implements CrudListener<Stock> {
+public class StockCrudListener implements CrudListener<StockViewModel> {
 
 
     private final StockService stockService;
 
-    public StockCrudListener(StockService stockService) {
+    private final StockTradeService stockTradeService;
+
+    public StockCrudListener(StockService stockService, StockTradeService stockTradeService) {
         this.stockService = stockService;
+        this.stockTradeService = stockTradeService;
     }
 
     @Override
-    public Collection<Stock> findAll() {
-        return stockService.findAllStocks();
+    public Collection<StockViewModel> findAll() {
+        List<Stock> stockList = stockService.findAllStocks();
+        List<StockViewModel> stockViewModelList = new ArrayList<>();
+        for (Stock stock : stockList) {
+            stockViewModelList.add(new StockViewModel(stock.getTickerSymbol(), stock.getCompanyName(), stock.getCurrentPrice(), stock.getSector()));
+        }
+        return stockViewModelList;
     }
 
     @Override
-    public Stock add(Stock stock) {
-        stockService.addStock(stock);
+    public StockViewModel add(StockViewModel stock) {
+        List<Stock> stockList = stockService.findAllStocks();
+        boolean exists = false;
+        for (Stock s : stockList) {
+            if (s.getTickerSymbol().equals(stock.getTickerSymbol())) {
+                Notification.show("Stock with this ticker symbol already exists!", 3000, Notification.Position.MIDDLE);
+                exists = true;
+            }
+        }
+        if (!exists) {
+            stockService.addStock(new Stock(stock.getTickerSymbol(), stock.getCompanyName(), stock.getCurrentPrice(), stock.getSector()));
+        }
         return stock;
     }
 
     @Override
-    public Stock update(Stock stock) {
-        stockService.updateStock(stock);
+    public StockViewModel update(StockViewModel stock) {
+        List<Stock> stockList = stockService.findAllStocks();
+        for (Stock s : stockList) {
+            if (s.getTickerSymbol().equals(stock.getTickerSymbol())) {
+                s.setCompanyName(stock.getCompanyName());
+                s.setCurrentPrice(stock.getCurrentPrice());
+                s.setSector(stock.getSector());
+            }
+        }
         return stock;
     }
 
     @Override
-    public void delete(Stock stock) {
-        stockService.deleteStockByTickerSymbol(stock.getTickerSymbol());
+    public void delete(StockViewModel stock) {
+        List<Stock> stockList = stockService.findAllStocks();
+        List<StockTrade> stockTradeList = stockTradeService.findAllStockTrades();
+        Stock deletedStock = null;
+        for (Stock s : stockList) {
+            if (s.getTickerSymbol().equals(stock.getTickerSymbol())) {
+                deletedStock = s;
+            }
+        }
+        // liquidate all trades for this stock by selling them
+        for (StockTrade st : stockTradeList) {
+            if (st.getStock().equals(deletedStock)) {
+                stockTradeService.addStockTrade(new StockTrade(st.getTransactionId() * -1, st.getStockPrice(), st.getTransactionAmount() * -1, st.getDate(), st.getPortfolio(), st.getStock()));
+            }
+        }
+
+        if (deletedStock != null) {
+            stockService.deleteStock(deletedStock); //The deleted stocks will be a nullpointer in the stockTradeList,but at least they were liquidated before deletion
+        }
     }
 }

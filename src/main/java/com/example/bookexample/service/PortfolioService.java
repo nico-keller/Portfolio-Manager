@@ -12,7 +12,7 @@ public interface PortfolioService {
     void updatePortfolio(Portfolio portfolio);
     void deletePortfolioById(long portfolioId);
 
-    void addStockToPortfolio(long portfolioId, Stock stock);
-    void removeStockFromPortfolio(long portfolioId, Stock stock);
+//    void addStockToPortfolio(long portfolioId, Stock stock);
+//    void removeStockFromPortfolio(long portfolioId, Stock stock);
     void addPortfolio(Portfolio portfolio, Long investorId);
 }
