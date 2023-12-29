@@ -9,7 +9,6 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 
 @Entity(name = "Investor")
 @Table(name = "investor")
