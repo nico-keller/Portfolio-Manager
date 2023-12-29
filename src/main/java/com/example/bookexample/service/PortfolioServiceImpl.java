@@ -59,6 +59,9 @@ public class PortfolioServiceImpl implements PortfolioService {
         portfolioRepository.deleteById(portfolioId);
     }
 
+    @Override
+    public void deleteAllPortfolios(){portfolioRepository.deleteAll();}
+
 //    @Override
 //    public void addStockToPortfolio(long portfolioId, Stock stock) {
 //        Portfolio portfolio = findPortfolioById(portfolioId);

@@ -10,4 +10,6 @@ public interface StockTradeService {
     void addStockTrade(StockTrade stockTrader);
     void updateStockTrade(StockTrade stockTrader);
     void deleteStockTradeById(long traderId);
+
+    void deleteAllStockTrades();
 }

@@ -44,4 +44,7 @@ public class StockTradeServiceImpl implements StockTradeService {
     public void deleteStockTradeById(long traderId) {
         stockTradeRepository.deleteById(traderId);
     }
+
+    @Override
+    public void deleteAllStockTrades(){stockTradeRepository.deleteAll();};
 }

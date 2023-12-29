@@ -12,7 +12,8 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 
-@Entity
+@Entity(name = "Stock")
+@Table(name = "stock")
 public class Stock {
 
     @Id

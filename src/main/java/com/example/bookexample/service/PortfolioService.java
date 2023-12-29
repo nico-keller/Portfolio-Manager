@@ -15,4 +15,6 @@ public interface PortfolioService {
 //    void addStockToPortfolio(long portfolioId, Stock stock);
 //    void removeStockFromPortfolio(long portfolioId, Stock stock);
     void addPortfolio(Portfolio portfolio, Long investorId);
+
+    void deleteAllPortfolios();
 }
