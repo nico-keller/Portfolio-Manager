@@ -89,32 +89,7 @@ public class StockTradeCrudListener implements CrudListener<StockTradeViewModel>
                 s.setStockPrice(stockTrade.getStockPrice());
                 s.setTransactionAmount(stockTrade.getTransactionAmount());
                 s.setDate(stockTrade.getDate());
-                List<Portfolio> portfolioList = portfolioService.findAllPortfolios();
-                Portfolio portfolio = null;
-                for (Portfolio p : portfolioList) {
-                    if (p.getPortfolioId() == stockTrade.getPortfolioId()) {
-                        portfolio = p;
-                    }
-                }
-                List<Stock> stockList = stockService.findAllStocks();
-                Stock stock = null;
-                for (Stock st : stockList) {
-                    if (st.getTickerSymbol().equals(stockTrade.getTickerSymbol().toUpperCase())) {
-                        stock = st;
-                    }
-                }
-                if (portfolio == null) {
-                    Notification.show("Portfolio with this ID does not exist!", 3000, Notification.Position.MIDDLE);
-                } else if (stock == null) {
-                    Notification.show("Stock with this ticker symbol does not exist!", 3000, Notification.Position.MIDDLE);
-                } else {
-                    s.getPortfolio().getStockTransactions().remove(s);
-                    s.getStock().getStockTransactions().remove(s);
-                    s.setPortfolio(portfolio);
-                    s.setStock(stock);
-                    portfolio.getStockTransactions().add(s);
-                    stock.getStockTransactions().add(s);
-                }
+                stockTradeService.updateStockTrade(s);
             }
         }
         return stockTrade;
@@ -125,8 +100,6 @@ public class StockTradeCrudListener implements CrudListener<StockTradeViewModel>
         List<StockTrade> stockTradeList = stockTradeService.findAllStockTrades();
         for (StockTrade s : stockTradeList) {
             if (s.getTransactionId() == stockTrade.getTransactionId()) {
-                s.getPortfolio().getStockTransactions().remove(s);
-                s.getStock().getStockTransactions().remove(s);
                 stockTradeService.deleteStockTradeById(s.getTransactionId());
             }
         }

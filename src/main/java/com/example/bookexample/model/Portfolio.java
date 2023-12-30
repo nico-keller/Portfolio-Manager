@@ -26,15 +26,6 @@ public class Portfolio {
     @Column
     private String portfolioName;
 
-
-//    @ManyToMany(cascade = CascadeType.ALL)
-//    @JoinTable(
-//            name = "portfolio_stock",
-//            joinColumns = @JoinColumn(name = "portfolio_id"),
-//            inverseJoinColumns = @JoinColumn(name = "stock_ticker")
-//    )
-//    private List<Stock> stocks;
-
     @ManyToOne
     @JoinColumn(name = "investor_id", referencedColumnName = "investorId")
     private Investor investor;

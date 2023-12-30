@@ -58,9 +58,9 @@ public class InvestorCrudListener implements CrudListener<InvestorViewModel> {
                 i.setFirstName(investor.getFirstName());
                 i.setLastName(investor.getLastName());
                 i.setEmail(investor.getEmail());
+                investorService.updateInvestor(i);
             }
         }
-
         return investor;
     }
 

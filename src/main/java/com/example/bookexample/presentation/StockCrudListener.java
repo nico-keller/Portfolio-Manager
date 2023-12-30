@@ -61,6 +61,7 @@ public class StockCrudListener implements CrudListener<StockViewModel> {
                 s.setCompanyName(stock.getCompanyName());
                 s.setCurrentPrice(stock.getCurrentPrice());
                 s.setSector(stock.getSector());
+                stockService.updateStock(s);
             }
         }
         return stock;
@@ -69,22 +70,10 @@ public class StockCrudListener implements CrudListener<StockViewModel> {
     @Override
     public void delete(StockViewModel stock) {
         List<Stock> stockList = stockService.findAllStocks();
-        List<StockTrade> stockTradeList = stockTradeService.findAllStockTrades();
-        Stock deletedStock = null;
         for (Stock s : stockList) {
             if (s.getTickerSymbol().equals(stock.getTickerSymbol())) {
-                deletedStock = s;
+                stockService.deleteStock(s);
             }
-        }
-        // liquidate all trades for this stock by selling them
-        for (StockTrade st : stockTradeList) {
-            if (st.getStock().equals(deletedStock)) {
-                stockTradeService.addStockTrade(new StockTrade(st.getTransactionId() * -1, st.getStockPrice(), st.getTransactionAmount() * -1, st.getDate(), st.getPortfolio(), st.getStock()));
-            }
-        }
-
-        if (deletedStock != null) {
-            stockService.deleteStock(deletedStock); //The deleted stocks will be a nullpointer in the stockTradeList,but at least they were liquidated before deletion
         }
     }
 }

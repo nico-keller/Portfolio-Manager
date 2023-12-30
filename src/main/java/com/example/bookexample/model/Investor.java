@@ -26,8 +26,9 @@ public class Investor {
         @Column
         private String email;
 
-        @OneToMany(mappedBy = "investor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+        @OneToMany(mappedBy = "investor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
         private Set<Portfolio> portfolios;
+
 
         public Investor(long investorId, String firstName, String lastName, String email) {
             this.investorId = investorId;

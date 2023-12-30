@@ -28,9 +28,6 @@ public class Stock {
     @Column
     private String sector;
 
-//    @ManyToMany(mappedBy = "stocks", fetch = FetchType.EAGER)
-//    private List<Portfolio> portfolios;
-
     @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL)
     private Set<StockTrade> stockTransactions;
 

@@ -58,7 +58,6 @@ public class PortfolioCrudListener implements CrudListener<PortfolioViewModel> {
             } else {
                 Portfolio p = new Portfolio(portfolio.getPortfolioId(), portfolio.getOpeningDate(), portfolio.getPortfolioName(), investor);
                 portfolioService.addPortfolio(p);
-                investor.getPortfolios().add(p);
             }
         }
 
@@ -82,9 +81,8 @@ public class PortfolioCrudListener implements CrudListener<PortfolioViewModel> {
                 if (investor == null) {
                     Notification.show("Investor with this ID does not exist!", 3000, Notification.Position.MIDDLE);
                 } else {
-                    p.getInvestor().getPortfolios().remove(p);
                     p.setInvestor(investor);
-                    investor.getPortfolios().add(p);
+                    portfolioService.updatePortfolio(p);
                 }
             }
         }
@@ -97,8 +95,7 @@ public class PortfolioCrudListener implements CrudListener<PortfolioViewModel> {
         List<Portfolio> portfolioList = portfolioService.findAllPortfolios();
         for (Portfolio p : portfolioList) {
             if (p.getPortfolioId() == portfolio.getPortfolioId()) {
-                p.getInvestor().getPortfolios().remove(p);
-                portfolioService.deletePortfolioById(p.getPortfolioId());
+                portfolioService.deletePortfolio(p);
             }
         }
     }

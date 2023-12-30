@@ -60,19 +60,10 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public void deleteAllPortfolios(){portfolioRepository.deleteAll();}
+    public void deletePortfolio(Portfolio portfolio) {
+        portfolioRepository.delete(portfolio);
+    }
 
-//    @Override
-//    public void addStockToPortfolio(long portfolioId, Stock stock) {
-//        Portfolio portfolio = findPortfolioById(portfolioId);
-//        portfolio.getStocks().add(stock);
-//        portfolioRepository.save(portfolio);
-//    }
-//
-//    @Override
-//    public void removeStockFromPortfolio(long portfolioId, Stock stock) {
-//        Portfolio portfolio = findPortfolioById(portfolioId);
-//        portfolio.getStocks().remove(stock);
-//        portfolioRepository.save(portfolio);
-//    }
+    @Override
+    public void deleteAllPortfolios(){portfolioRepository.deleteAll();}
 }
