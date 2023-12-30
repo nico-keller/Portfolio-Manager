@@ -8,6 +8,8 @@ import com.example.bookexample.viewmodel.InvestorViewModel;
 import com.example.bookexample.viewmodel.PortfolioViewModel;
 import com.example.bookexample.viewmodel.StockTradeViewModel;
 import com.example.bookexample.viewmodel.StockViewModel;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
@@ -40,10 +42,11 @@ public class MainView extends VerticalLayout {
 
     private void initLayout() {
         Tabs tabs = new Tabs();
-        Tab tabInvestors = new Tab("Investors");
-        Tab tabPortfolios = new Tab("Portfolios");
-        Tab tabStockTrades = new Tab("Stock Trades");
-        Tab tabStocks = new Tab("Stocks");
+
+        Tab tabInvestors = new Tab(VaadinIcon.USER.create(), new Span("Investors"));
+        Tab tabPortfolios = new Tab(VaadinIcon.BRIEFCASE.create(), new Span("Portfolios"));
+        Tab tabStockTrades = new Tab(VaadinIcon.EXCHANGE.create(), new Span("Stock Trades"));
+        Tab tabStocks = new Tab(VaadinIcon.INVOICE.create(), new Span("Stocks"));
 
         tabs.add(tabInvestors, tabPortfolios, tabStockTrades, tabStocks);
 
