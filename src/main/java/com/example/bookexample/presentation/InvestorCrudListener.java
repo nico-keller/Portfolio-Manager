@@ -28,7 +28,8 @@ public class InvestorCrudListener implements CrudListener<InvestorViewModel> {
         List<Investor> investorList = investorService.findAllInvestors();
         List <InvestorViewModel> investorViewModelList = new ArrayList<>();
         for (Investor investor : investorList) {
-            investorViewModelList.add(new InvestorViewModel(investor.getInvestorId(), investor.getFirstName(), investor.getLastName(), investor.getEmail()));
+            InvestorViewModel i = new InvestorViewModel(investor.getInvestorId(), investor.getFirstName(), investor.getLastName(), investor.getEmail());
+            investorViewModelList.add(i);
         }
         return investorViewModelList;
     }
@@ -44,7 +45,8 @@ public class InvestorCrudListener implements CrudListener<InvestorViewModel> {
             }
         }
         if (!exists) {
-            investorService.addInvestor(new Investor(investor.getInvestorId(), investor.getFirstName(), investor.getLastName(), investor.getEmail()));
+            Investor i = new Investor(investor.getInvestorId(), investor.getFirstName(), investor.getLastName(), investor.getEmail());
+            investorService.addInvestor(i);
         }
 
         return investor;

@@ -15,5 +15,4 @@ public class InvestorViewModel {
     private String lastName;
 
     private String email;
-
 }

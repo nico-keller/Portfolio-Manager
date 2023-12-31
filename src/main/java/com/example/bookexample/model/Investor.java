@@ -15,6 +15,7 @@ import java.util.Set;
 public class Investor {
 
         @Id
+        @Generated
         private long investorId;
 
         @Column
